@@ -30,8 +30,11 @@ public class BCryptPasswordHashProvider implements PasswordHashProvider {
     public PasswordCredentialModel encodedCredential(final String rawPassword, final int iterations) {
         final String encodedPassword = encode(rawPassword, iterations);
 
+        // Use defaultIterations if iterations is -1 to ensure policyCheck works correctly
+        final int actualIterations = iterations == -1 ? defaultIterations : iterations;
+
         // bcrypt salt is stored as part of the encoded password so no need to store salt separately
-        return PasswordCredentialModel.createFromValues(providerId, new byte[0], iterations, encodedPassword);
+        return PasswordCredentialModel.createFromValues(providerId, new byte[0], actualIterations, encodedPassword);
     }
 
     @Override
